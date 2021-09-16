@@ -22,4 +22,8 @@ class Favored extends Model
         'valid'
     ];
 
+    protected $casts = [
+        'valid' => 'boolean'
+    ];
+
 }

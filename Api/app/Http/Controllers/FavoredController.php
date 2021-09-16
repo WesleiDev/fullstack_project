@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FavoredRequest;
 use App\Http\Resources\FavoredResource;
 use App\Models\Favored;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ class FavoredController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -31,11 +32,20 @@ class FavoredController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(FavoredRequest $request)
     {
-        //
+        try{
+            $data = $request->all();
+
+        }catch(\Exception $e){
+            return response()
+                ->json([
+                    'data' => 'Erro ao salvar cliente. Por favor tente novamente. '.$e->getMessage(),
+                    'error' => true
+                ]);
+        }
     }
 
     /**
