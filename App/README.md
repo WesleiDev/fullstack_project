@@ -1,22 +1,12 @@
-# Quasar App (user-application)
+# Aplicação front end para consumir a API
+<p>Esta aplicação tem o objetivo de consumir a API deste projeto. Para configurar o projeto front-end basta seguir as etapas abaixo</p>
 
-A Quasar Framework app
-
-## Install the dependencies
+## Instalar dependências
 ```bash
 yarn
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Inicie o App em modo desenvolvimento (hot-code, reloading, error reporting ...)
 ```bash
 quasar dev
 ```
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v2.quasar.dev/quasar-cli/quasar-conf-js).
