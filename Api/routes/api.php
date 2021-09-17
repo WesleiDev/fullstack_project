@@ -18,7 +18,7 @@ use App\Http\Controllers\FavoredController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::delete('/favored/mass-delete', [FavoredController::class, 'massDelete'])->name('favored.mass_delete');
 Route::apiResources([
    'favored' => FavoredController::class
 ]);

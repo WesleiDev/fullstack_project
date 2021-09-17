@@ -14,10 +14,20 @@ class FavoredController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
         try{
-            return FavoredResource::collection(Favored::paginate());
+            $search = $request->get('search');
+
+            return FavoredResource::collection(
+                Favored::where(function($query) use ($search){
+                    $query->where('favoreds.name', 'LIKE', "%".$search."%" )
+                          ->orWhere( 'favoreds.document', 'LIKE', "%".$search."%")
+                          ->orWhere( 'favoreds.agency', 'LIKE', "%".$search."%")
+                          ->orWhere( 'favoreds.account', 'LIKE', "%".$search."%");
+
+                })->paginate()
+            );
         }catch(\Exception $e){
             return response()
                 ->json([
@@ -38,11 +48,16 @@ class FavoredController extends Controller
     {
         try{
             $data = $request->all();
+            $favored = Favored::create($data);
+            return response()->json([
+               'data' => $favored,
+               'error' => false
+            ]);
 
         }catch(\Exception $e){
             return response()
                 ->json([
-                    'data' => 'Erro ao salvar cliente. Por favor tente novamente. '.$e->getMessage(),
+                    'data' => 'Erro ao salvar favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
                 ]);
         }
@@ -52,11 +67,24 @@ class FavoredController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        try{
+            $favored = Favored::findOrFail($id);
+            return response()->json([
+                'data' => $favored,
+                'error' => false
+            ]);
+
+        }catch(\Exception $e){
+            return response()
+                ->json([
+                    'data' => 'Erro ao consultar favorecido. Por favor tente novamente. '.$e->getMessage(),
+                    'error' => true
+                ]);
+        }
     }
 
      /**
@@ -64,21 +92,83 @@ class FavoredController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FavoredRequest $request, $id)
     {
-        //
+        try{
+            $data = $request->all();
+            $favored = Favored::findOrFail($id);
+            $favored->update($data);
+
+            return response()->json([
+                'data' => $favored,
+                'error' => false
+            ]);
+
+        }catch(\Exception $e){
+            return response()
+                ->json([
+                    'data' => 'Erro ao salvar favorecido. Por favor tente novamente. '.$e->getMessage(),
+                    'error' => true
+                ]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        try{
+            $favored = Favored::findOrFail($id);
+            $favored->delete();
+
+            return response()->json([
+                'data' => 'Favorecido excluido com sucesso!',
+                'error' => false
+            ]);
+
+        }catch(\Exception $e){
+            return response()
+                ->json([
+                    'data' => 'Erro ao excluir favorecido. Por favor tente novamente. '.$e->getMessage(),
+                    'error' => true
+                ]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function massDelete(Request $request)
+    {
+        try{
+            $data = $request->all();
+  
+            foreach ($data['ids'] as $id){
+                $favored = Favored::findOrFail($id);
+                $favored->delete();
+
+            }
+
+            return response()->json([
+                'data' => 'Favorecidos excluidos com sucesso!',
+                'error' => false
+            ]);
+
+        }catch(\Exception $e){
+            return response()
+                ->json([
+                    'data' => 'Erro ao excluir favorecido. Por favor tente novamente. '.$e->getMessage(),
+                    'error' => true
+                ]);
+        }
     }
 }

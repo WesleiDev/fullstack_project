@@ -57,9 +57,9 @@ class FavoredRequest extends FormRequest
                     'account'      => 'regex:/^(?:^0*)[1-9][0-9]{0,7}$/|max:8|required',
                     'accountDigit' => 'regex:/^[xX0-9]{0,1}$/|required',
                     'accountType'  => [
-                                        'required',
-                                         Rule::in(['CONTA_CORRENTE', 'CONTA_POUPANCA', 'CONTA_FACIL'])
-                                      ]
+                        'required',
+                         Rule::in(['CONTA_CORRENTE', 'CONTA_POUPANCA', 'CONTA_FACIL'])
+                    ]
                 ] ;
                 break;
             default:
