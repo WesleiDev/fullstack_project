@@ -1,1 +1,24 @@
 // app global css in SCSS form
+
+.q-layout, header  {
+  max-width: 1280px!important;
+  margin: auto!important;
+}
+
+#table-results .title-table {
+  font-size: 1.4em;
+  color: #72818e;
+}
+
+#table-results .row-table {
+  color: #8c9296;
+  font-size: 1.4em;
+  font-weight: 300;
+}
+
+.status-favored-table {
+    width: 100%;
+    font-size: 1.0em;
+    padding: 10px;
+    display:block!important;
+}
