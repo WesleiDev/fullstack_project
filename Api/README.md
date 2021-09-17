@@ -15,7 +15,7 @@ Os seguintes recursos foram utilizados.
 
 ## Instruções para utilização
 
-<p>Clone o repositório, acesse o repositório e execute os seguinte comandos  </p>
+<p>Clone o repositório, acesse o diretório criado e execute os seguinte comandos  </p>
 
 
 ```bash
