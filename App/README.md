@@ -3,7 +3,7 @@
 
 ## Instalar dependências
 ```bash
-yarn
+yarn install
 ```
 
 ### Inicie o App em modo desenvolvimento (hot-code, reloading, error reporting ...)
