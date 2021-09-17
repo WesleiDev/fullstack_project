@@ -17,11 +17,16 @@ Os seguintes recursos foram utilizados.
 
 <p>Clone o repositório, acesse o repositório e execute os seguinte comandos  </p>
 
-```composer install```
-</br>
-```php artisan migrate```
-</br>
-```php artisan db:seed``` 
-</br>
-```php artisan serve```
-</br>
+
+```bash
+php artisan migrate
+```
+
+```bash
+php artisan db:seed
+``` 
+
+```bash
+php artisan serve
+```
+
