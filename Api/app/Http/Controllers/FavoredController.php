@@ -151,7 +151,7 @@ class FavoredController extends Controller
     {
         try{
             $data = $request->all();
-  
+
             foreach ($data['ids'] as $id){
                 $favored = Favored::findOrFail($id);
                 $favored->delete();
