@@ -34,4 +34,25 @@
   height: 50px;
 }
 
+.content-buttons-footer-md-favored {
+  display: block;
+  height: 80px;
+  width: 600px;
+  margin: auto;
+}
+
+.btn-save , .btn-cancel {
+  width: 150px;
+  font-size: 1.2em;
+  font-weight: 300;
+  padding: 10px;
+}
+
+.btn-save {
+  float: right;
+}
+
+.btn-cancel {
+  float: left;
+}
 
