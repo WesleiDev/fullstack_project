@@ -1,20 +1,53 @@
 <template>
 
   <div>
-    <div class="row q-pl-lg q-pt-lg">
-      <q-btn label="Excluir selecionados"
-      color="pink-3"
-      no-caps
-      size="md"
-      padding="md"
-      :disable="!selected.length"
-      />
+    <q-card class="flat bordered no-shadow">
+        <q-card-section class="bg-primary text-white">
+          <div class="text-h6">Seus Favorecidos</div>
+        </q-card-section>
 
-    </div>
+        <q-separator />
+
+        <q-card-section class="bg-blue-grey-1">
+          <div class="row q-pa-lg">
+              <div class="col-9">
+                <div>
+                  <span class="text-blue-grey-6 text-h5">Seus favorecidos {{dataPaginate}} </span>
+                  <q-btn round
+                  color="primary"
+                  icon="add"
+                  @click="handlleClickAddFavored" />
+                </div>
+              </div>
+              <div class="col-3">
+                <q-input outlined
+                        autofocus
+                        bg-color="white"
+                        v-model="search"
+                        placeholder="Nome, CPF, Agência ou Conta"
+                        :dense="true">
+                      <template v-slot:append>
+                    <q-btn round dense flat icon="search" />
+                  </template>
+                </q-input>
+              </div>
+          </div>
+        </q-card-section>
+      </q-card>
+      <div class="row q-pl-lg q-pt-lg">
+        <q-btn label="Excluir selecionados"
+        color="pink-3"
+        no-caps
+        size="md"
+        padding="md"
+        :disable="!selected.length"
+        />
+
+      </div>
     <div class="col-12">
       <div class="q-pt-md">
         <q-table
-          :separator="separator"
+          separator="none"
           title="Favorecidos"
           :rows="rows"
           :columns="columns"
@@ -28,7 +61,7 @@
         >
 
           <template v-slot:body="props">
-            <q-tr :props="props" @click="handlleClickRowTable">
+            <q-tr :props="props" @click="handleClickRowTable">
               <q-td>
                 <q-checkbox v-model="props.selected"/>
               </q-td>
@@ -174,20 +207,32 @@ export default defineComponent({
     return {
        openModalFavored: false,
        selected: ref([]),
+       search: '',
        columns,
        rows,
        pagination,
-       separator: ref('none')
     }
   },
+  mounted() {
+
+  },
   computed: {
-    pagesNumber() {
+    pagesNumber: function() {
       return Math.ceil(rows.length / pagination.value.rowsPerPage)
+    },
+    dataPaginate: function(){
+      return this.$store.state.favored.dataPaginate
     }
   },
   methods: {
-    handlleClickRowTable(){
+    handleClickRowTable(){
       this.openModalFavored = true
+    },
+    handlleClickAddFavored(){
+      this.openModalFavored = true
+    },
+    searchFavored(){
+      this.$store.dispatch('favored/search', { search: this.search })
     },
     getLogoBank(codBank){
       switch (codBank) {
@@ -205,6 +250,11 @@ export default defineComponent({
             return require('../../assets/logo_bank/other_bank.png')
           break;
       }
+    }
+  },
+  watch: {
+    search(){
+      this.searchFavored()
     }
   }
 })

@@ -154,7 +154,7 @@ export default defineComponent({
   props: ['openModalFavored'],
   data(){
     return {
-      dialog: ref(true),
+      dialog: ref(false),
       maximizedToggle: ref(true),
       optionsBank,
       optionsTypeAccount,
