@@ -17,7 +17,10 @@ class FavoredController extends Controller
     public function index(Request $request)
     {
         try{
-            $search = $request->get('search');
+            $search  = $request->get('search');
+            $perpage = $request->get('perpage') ?? 10 ;
+            $page    = $request->get('page') ?? 1;
+//            dd($page);
 
             return FavoredResource::collection(
                 Favored::where(function($query) use ($search){
@@ -26,7 +29,7 @@ class FavoredController extends Controller
                           ->orWhere( 'favoreds.agency', 'LIKE', "%".$search."%")
                           ->orWhere( 'favoreds.account', 'LIKE', "%".$search."%");
 
-                })->paginate()
+                })->paginate($perpage, ['*'], 'page', $page)
             );
         }catch(\Exception $e){
             return response()

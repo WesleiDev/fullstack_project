@@ -3,7 +3,7 @@
   <div>
     <q-card class="flat bordered no-shadow">
         <q-card-section class="bg-primary text-white">
-          <div class="text-h6">Seus Favorecidos</div>
+          <div class="text-h6 text-white">Seus Favorecidos</div>
         </q-card-section>
 
         <q-separator />
@@ -12,7 +12,7 @@
           <div class="row q-pa-lg">
               <div class="col-9">
                 <div>
-                  <span class="text-blue-grey-6 text-h5">Seus favorecidos {{dataPaginate}} </span>
+                  <span class="text-blue-grey-6 text-h5">Seus favorecidos </span>
                   <q-btn round
                   color="primary"
                   icon="add"
@@ -92,10 +92,13 @@
         </q-table>
         <div class="row justify-center q-mt-md">
           <q-pagination
-            v-model="pagination.page"
-            color="grey-8"
+            v-model="currentPage"
+            color="secondary"
             :max="pagesNumber"
             size="sm"
+            :max-pages="6"
+            boundary-numbers
+            push
           />
         </div>
       </div>
@@ -129,76 +132,15 @@ const columns = [
   { name: 'valid',align: 'center', label: 'Status do Favorecido', field: 'valid', headerClasses: 'title-table', classes: 'row-table', },
 ]
 
-const rows = [
-  {
-    name: 'Bárbada da Silva Silveira Fontes',
-    bank: '756',
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-  {
-    name: 'Ice cream sandwich',
-    bank: '237',
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-  {
-    name: 'Eclair',
-    bank: '104',
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-  {
-    name: 'Cupcake',
-    bank: '104',
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-  {
-    name: 'Gingerbread',
-    bank: 356,
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: false,
-  },
-  {
-    name: 'Jelly bean',
-    bank: 375,
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-  {
-    name: 'Lollipop',
-    bank: 392,
-    document: '021.935.239-12',
-    account: '01002713-9',
-    agency: '0814-0',
-    valid: true,
-  },
-
-
-]
 
 const pagination = ref({
   sortBy: 'desc',
   descending: false,
   page: 1,
   rowsPerPage: 10
-  // rowsNumber: xx if getting data from a server
 })
 
-export default defineComponent({
+export default {
   name: 'list-favored',
   components: {
     ModalFavored
@@ -209,17 +151,16 @@ export default defineComponent({
        selected: ref([]),
        search: '',
        columns,
-       rows,
+       rows : [],
        pagination,
+       pagesNumber : 0,
+       currentPage: 1
     }
   },
   mounted() {
-
+    this.searchFavored()
   },
   computed: {
-    pagesNumber: function() {
-      return Math.ceil(rows.length / pagination.value.rowsPerPage)
-    },
     dataPaginate: function(){
       return this.$store.state.favored.dataPaginate
     }
@@ -232,7 +173,17 @@ export default defineComponent({
       this.openModalFavored = true
     },
     searchFavored(){
-      this.$store.dispatch('favored/search', { search: this.search })
+      this.$store.dispatch('favored/search', {
+                                                search: this.search,
+                                                perpage: this.pagination.rowsPerPage ,
+                                                page: this.currentPage
+                                              })
+    },
+    mountedDataTable(){
+      const { data, links, meta } = this.dataPaginate
+      this.currentPage = meta.current_page
+      this.pagesNumber = meta.last_page
+      this.rows = data
     },
     getLogoBank(codBank){
       switch (codBank) {
@@ -255,7 +206,14 @@ export default defineComponent({
   watch: {
     search(){
       this.searchFavored()
+    },
+    dataPaginate(value){
+      this.mountedDataTable()
+    },
+    currentPage(value){
+      this.searchFavored()
     }
+
   }
-})
+}
 </script>
