@@ -11,3 +11,4 @@ yarn
 quasar dev
 ```
 
+<p>A aplicação deve subir na porta 3000 da máquina local e abrir automáticamente em seu navegador padrão</p>
