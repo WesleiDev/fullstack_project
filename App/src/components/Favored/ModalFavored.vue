@@ -24,6 +24,7 @@
           <div class="row">
             <div class="col-7 q-pt-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         v-model="favored.name"
                         placeholder="Fulano da silva"
@@ -36,6 +37,7 @@
 
             <div class="col-3 q-pl-sm q-pt-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         :mask="favored.document.length < 15 ? '###.###.###-###': '##.###.###/####-##'"
                         v-model="favored.document"
@@ -60,6 +62,17 @@
                         dense
                         />
             </div>
+
+            <div class="col-3 q-pt-sm q-pl-sm" v-if="favored?.id > 0">
+              <q-select outlined
+                        v-model="favored.valid"
+                        emit-value
+                        :options="optionsValid"
+                        label="Status"
+                        ref="valid"
+                        map-options
+                        dense/>
+            </div>
           </div>
 
           <q-card-section>
@@ -69,6 +82,7 @@
           <div class="row q-pt-sm">
             <div class="col-7 ">
               <q-select outlined
+                        :disable="favored?.valid"
                         v-model="favored.bank"
                         :options="optionsBank"
                         use-input
@@ -83,6 +97,7 @@
             </div>
             <div class="col-3 q-pl-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         v-model="favored.agency"
                         placeholder=""
@@ -94,6 +109,7 @@
             </div>
             <div class="col-2 q-pl-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         v-model="favored.agencyDigit"
                         placeholder=""
@@ -108,8 +124,10 @@
           <div class="row q-pt-sm">
             <div class="col-7 ">
               <q-select outlined
+                        :disable="favored?.valid"
                         v-model="favored.accountType"
                         emit-value
+                        map-options
                         :options="optionsTypeAccount"
                         label="Qual o tipo da conta?"
                         ref="accountType"
@@ -118,6 +136,7 @@
             </div>
             <div class="col-3 q-pl-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         v-model="favored.account"
                         placeholder=""
@@ -129,6 +148,7 @@
             </div>
             <div class="col-2 q-pl-sm">
               <q-input outlined
+                        :disable="favored?.valid"
                         autofocus
                         v-model="favored.accountDigit"
                         placeholder=""
@@ -142,18 +162,25 @@
 
           <div class="row q-pt-md content-buttons-footer-md-favored">
             <q-btn class="btn-cancel"
-            color="primary"
-            label="Cancelar"
-            no-caps
-            outline
-            v-close-popup
+              color="primary"
+              label="Cancelar"
+              no-caps
+              outline
+              v-close-popup
             />
 
             <q-btn class="btn-save"
-            color="secondary"
-            label="Salvar"
-            no-caps
-            @click="save()"
+              color="secondary"
+              label="Salvar"
+              no-caps
+              @click="save()"
+             />
+             <q-btn v-if="favored?.id > 0"
+              class="btn-delete q-mr-sm"
+              color="red-13"
+              icon="delete"
+              no-caps
+              @click="deleteFavored()"
              />
           </div>
         </q-card-section>
@@ -182,9 +209,14 @@ const optionsTypeAccount = [
   {label: 'Conta Fácil', value: 'CONTA_FACIL'},
 ];
 
+const optionsValid = [
+  { label: 'Rascunho', value: false },
+  { label: 'Validado', value: true }
+]
+
 export default defineComponent({
   name:'modal-favored',
-  props: ['openModalFavored'],
+  props: ['openModalFavored', 'favoredSelected'],
   data(){
     return {
       validEmailForm,
@@ -192,6 +224,7 @@ export default defineComponent({
       maximizedToggle: ref(true),
       optionsBank,
       optionsTypeAccount,
+      optionsValid,
       favored: {
         name: '',
         document: '',
@@ -269,9 +302,11 @@ export default defineComponent({
       return pattern.test(val) || 'Formato inválido';
     },
     validAccountDigit(val){
+      const { bank } = this.favored
+
       if(val === '') return "Obrigatório"
 
-      const pattern = /^[xX0-9]{0,1}$/;
+      const pattern = bank === '001' ? /^[xX0-9]{0,1}$/ : /^[0-9]{0,1}$/;
       return pattern.test(val) || 'Formato inválido';
     },
     validAccount(val){
@@ -281,13 +316,14 @@ export default defineComponent({
     },
     validTypeAccount(typeAccount){
       const { bank } = this.favored
+      const OPT_OTHERS_BANK = [ 'CONTA_CORRENTE', 'CONTA_POUPANCA' ]
 
       //Se for banco do brasil, não pode permir o tipo da conta CONTA_FACIL
       if(!typeAccount) return "Informe o tipo da conta"
 
-      if(bank === '001'){
-        return typeAccount.value !== 'CONTA_FACIL'
-                              || 'Para o Banco do Brasil não é permitido esse tipo de conta'
+      if(bank !== '001'){
+        return OPT_OTHERS_BANK.includes(typeAccount)
+                              || 'Não é permitido selecionar o tipo de conta CONTA FÁCIL para esse banco'
       }
 
       return true
@@ -295,13 +331,42 @@ export default defineComponent({
     save(){
 
       if(this.isFormValid()){
-        console.log('VAI SALVAR O FAVORECIDO: ', this.favored)
-        api.post('/api/favored', this.favored)
+        if(this.favored.id === 0){
+          this.createFavoredApi()
+        }else{
+          this.updateFavoredApi()
+        }
+
+
+      }
+
+    },
+    createFavoredApi(){
+      api.post('/api/favored', this.favored)
+        .then(res => {
+
+          this.$q.notify({
+            message: 'Favorecido cadastrado com sucesso!',
+            position: 'top-right',
+            type: 'positive'
+          })
+
+          this.$emit('savedFavored', this.favored)
+        })
+        .catch(err => {
+          this.$q.notify({
+              message: 'Erro ao cadastrar favorecido, por favor tente novamente',
+              position: 'top-right',
+              type: 'negative'
+            })
+        })
+  },
+    updateFavoredApi(){
+      api.put(`/api/favored/${this.favored.id}`, this.favored)
           .then(res => {
-            console.log('Favored salvo: ', res)
 
             this.$q.notify({
-              message: 'Favorecido salvo com sucesso!',
+              message: 'Favorecido atualizado com sucesso!',
               position: 'top-right',
               type: 'positive'
             })
@@ -311,16 +376,36 @@ export default defineComponent({
           .catch(err => {
             // console.log('Erro ao salvar dados no banco de dados: ', err.response.data)
             this.$q.notify({
-                message: 'Erro ao salvar favorecido, por favor tente novamente',
+                message: 'Erro ao atualizar favorecido, por favor tente novamente',
                 position: 'top-right',
                 type: 'negative'
               })
           })
+    },
+    deleteFavored(){
 
-      }else{
-        console.log('NÂO PASSOU NA VALIDAÇÂO')
-      }
-
+      this.$q.dialog({
+        title: 'Excluir Favorecido',
+        message: 'Deseja realmente excluir esse favorecido?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        api.delete(`/api/favored/${this.favored.id}`)
+          .then(res => {
+              this.$q.notify({
+              message: 'Excluido com sucesso!',
+              position: 'top-right',
+              type: 'positive'
+            })
+            this.$emit('deletedFavored', true)
+          }).catch(err =>{
+            this.$q.notify({
+                message: 'Erro ao tentar excluir favorecido!',
+                position: 'top-right',
+                type: 'negative'
+              })
+          })
+      })
     }
 
   },
@@ -334,6 +419,9 @@ export default defineComponent({
         this.favored = this.newFavored()
         this.$emit('closeModal', false)
       }
+    },
+    favoredSelected(value){
+      this.favored = value
     }
   },
 

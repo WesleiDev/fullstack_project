@@ -40,6 +40,7 @@
         no-caps
         size="md"
         padding="md"
+        @click="massDelete"
         :disable="!selected.length"
         />
 
@@ -61,7 +62,7 @@
         >
 
           <template v-slot:body="props">
-            <q-tr :props="props" @click="handleClickRowTable">
+            <q-tr :props="props" @click="handleClickRowTable(props.row.id)">
               <q-td>
                 <q-checkbox v-model="props.selected"/>
               </q-td>
@@ -104,8 +105,10 @@
       </div>
     </div>
     <modal-favored :openModalFavored="openModalFavored"
-                      @savedFavored="savedFavored($event)"
-                      @closeModal="openModalFavored = $event"/>
+                   :favoredSelected="favoredSelected"
+                   @savedFavored="savedFavored($event)"
+                   @deletedFavored="deletedFavored($event)"
+                   @closeModal="openModalFavored = $event"/>
   </div>
 </template>
 
@@ -113,6 +116,7 @@
 import { ref } from 'vue';
 import ModalFavored from './ModalFavored';
 import { formatDocument } from '../../utils'
+import { api } from 'boot/axios'
 
 require('./styles.css')
 
@@ -149,6 +153,7 @@ export default {
   data(){
     return {
        formatDocument,
+       favoredSelected :{},
        openModalFavored: false,
        selected: ref([]),
        search: '',
@@ -168,7 +173,10 @@ export default {
     }
   },
   methods: {
-    handleClickRowTable(){
+    async handleClickRowTable(id){
+      await this.findFavored(id)
+                .then(res =>this.favoredSelected = res)
+
       this.openModalFavored = true
     },
     handlleClickAddFavored(){
@@ -198,6 +206,9 @@ export default {
         case '104': //CAIXA
             return require('../../assets/logo_bank/caixa.png')
           break;
+        case '001': //BANCO DO BRASIL
+            return require('../../assets/logo_bank/banco_do_brasil.png')
+          break;
 
         default: //DEFAULT
             return require('../../assets/logo_bank/other_bank.png')
@@ -207,6 +218,45 @@ export default {
     savedFavored(favored){
       this.openModalFavored = false
       this.searchFavored()
+    },
+    deletedFavored(isDelete){
+      this.openModalFavored = false
+      this.searchFavored()
+    },
+    findFavored(id){
+      return new Promise((resolve, reject) => {
+        api.get(`/api/favored/${id}`)
+          .then(res => resolve(res.data.data))
+          .catch(err => reject(err))
+      })
+    },
+    massDelete(){
+      const ids = this.selected.map(s => s.id)
+
+      this.$q.dialog({
+        title: 'Exclusão em massa',
+        message: 'Deseja realmente excluir todos os favorecidos selecionados?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        api.delete(`/api/favored/mass-delete/`,{ data: {ids: ids} })
+          .then(res => {
+              this.$q.notify({
+              message: 'Todos os favorecidos selecionados foram excluidos!',
+              position: 'top-right',
+              type: 'positive'
+            })
+            this.selected = []
+            this.searchFavored()
+          }).catch(err =>{
+            this.$q.notify({
+                message: 'Erro ao tentar excluir favorecidos selecionados',
+                position: 'top-right',
+                type: 'negative'
+              })
+          })
+      })
+
     }
   },
   watch: {

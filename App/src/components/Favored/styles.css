@@ -25,11 +25,6 @@
   height: 25px;
 }
 
-
-.md-favored {
-
-}
-
 .md-favored .q-bar {
   height: 50px;
 }
@@ -48,7 +43,13 @@
   padding: 10px;
 }
 
-.btn-save {
+.btn-delete {
+  font-size: 1.2em;
+  font-weight: 300;
+  padding: 10px;
+}
+
+.btn-save, .btn-delete {
   float: right;
 }
 
