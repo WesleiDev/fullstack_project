@@ -16,6 +16,7 @@ Os seguintes recursos foram utilizados.
 ## Instruções para utilização
 
 <p>Clone o repositório, acesse o diretório e <b>crie um arquivo .env na pasta root do a aplicação com as segunites opções</b>  </p>
+
 ```bash
 APP_NAME=Laravel
 APP_ENV=local
