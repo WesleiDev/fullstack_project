@@ -30,3 +30,8 @@ php artisan db:seed
 php artisan serve
 ```
 
+Assim que inicializado, o servidor irá subir na porta 8000, caso precise alterar a porta em que a aplicação é inicializada execute
+```bash
+php artisan serve --port=NUMERO_DA_PORTA_AQUI
+```
+
