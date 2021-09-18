@@ -1,8 +1,8 @@
 {
   "name": "user-application",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "Front end de um projeto fullstack",
+  "productName": "Fullstack - front",
   "author": "weslei.fs@hotmail.com",
   "private": true,
   "scripts": {

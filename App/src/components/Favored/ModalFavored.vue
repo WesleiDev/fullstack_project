@@ -226,6 +226,7 @@ export default defineComponent({
       optionsTypeAccount,
       optionsValid,
       favored: {
+        id: 0,
         name: '',
         document: '',
         email: '',
@@ -243,6 +244,7 @@ export default defineComponent({
   methods: {
     newFavored(){
       return {
+        id: 0,
         name: '',
         document: '',
         email: '',
@@ -331,7 +333,7 @@ export default defineComponent({
     save(){
 
       if(this.isFormValid()){
-        if(this.favored.id === 0){
+        if(this.favored.id == 0){
           this.createFavoredApi()
         }else{
           this.updateFavoredApi()
