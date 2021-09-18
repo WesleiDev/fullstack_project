@@ -15,7 +15,21 @@ Os seguintes recursos foram utilizados.
 
 ## Instruções para utilização
 
-<p>Clone o repositório, acesse o diretório criado e execute os seguinte comandos  </p>
+<p>Clone o repositório, acesse o diretório e <b>crie um arquivo .env na pasta root do a aplicação com as segunites opções</b>  </p>
+```bash
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=base64:Y4WUlwdGhGZW7SLlIB1n9/gUP2XseePF4IbISSTh7RY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1 (HOST DA MÁQUINA ONDE ESTA O BANCO DE DADOS)
+DB_PORT=3306(PORTA EM QUE SEU BANCO DE DADOS ESTA RODANDO)
+DB_DATABASE=NOME DO BANCO DE DADOS (CRIE UM BANCO DE DADOS ZERADO)
+DB_USERNAME=NOME DO SEU USUÁRIO NO BANCO DE DADOS
+DB_PASSWORD=SENH DO USUÁRIO NO BANCO DE DADOS
+```
 
 ```bash
 composer install
