@@ -17,6 +17,9 @@ Os seguintes recursos foram utilizados.
 
 <p>Clone o repositório, acesse o diretório criado e execute os seguinte comandos  </p>
 
+```bash
+composer install
+```
 
 ```bash
 php artisan migrate
