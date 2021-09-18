@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,5 +26,9 @@ class Favored extends Model
     protected $casts = [
         'valid' => 'boolean'
     ];
+
+    function setDocumentAttribute($value){
+        $this->attributes['document'] = Utils::removeCaracter($value);
+    }
 
 }

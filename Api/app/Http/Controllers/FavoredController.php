@@ -29,7 +29,8 @@ class FavoredController extends Controller
                           ->orWhere( 'favoreds.agency', 'LIKE', "%".$search."%")
                           ->orWhere( 'favoreds.account', 'LIKE', "%".$search."%");
 
-                })->paginate($perpage, ['*'], 'page', $page)
+                })->orderBy('id', 'desc')
+                  ->paginate($perpage, ['*'], 'page', $page)
             );
         }catch(\Exception $e){
             return response()
