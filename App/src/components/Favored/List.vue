@@ -69,16 +69,16 @@
                 {{ props.row.name }}
               </q-td>
               <q-td key="document" :props="props">
-                {{ props.row.document }}
+                {{ formatDocument(props.row.document) }}
               </q-td>
               <q-td key="bank" :props="props">
                 <img :src="getLogoBank(props.row.bank)" class="img-logo-bank-list"/>
               </q-td>
               <q-td key="agency" :props="props">
-                {{ props.row.agency }}
+                {{ props.row.agency + '-' +props.row.agencyDigit }}
               </q-td>
               <q-td key="account" :props="props">
-                {{ props.row.account }}
+                {{ props.row.account + '-' +props.row.accountDigit }}
               </q-td>
               <q-td key="valid" :props="props">
                 <q-badge
@@ -104,14 +104,15 @@
       </div>
     </div>
     <modal-favored :openModalFavored="openModalFavored"
+                      @savedFavored="savedFavored($event)"
                       @closeModal="openModalFavored = $event"/>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
 import { ref } from 'vue';
 import ModalFavored from './ModalFavored';
+import { formatDocument } from '../../utils'
 
 require('./styles.css')
 
@@ -147,6 +148,7 @@ export default {
   },
   data(){
     return {
+       formatDocument,
        openModalFavored: false,
        selected: ref([]),
        search: '',
@@ -201,6 +203,10 @@ export default {
             return require('../../assets/logo_bank/other_bank.png')
           break;
       }
+    },
+    savedFavored(favored){
+      this.openModalFavored = false
+      this.searchFavored()
     }
   },
   watch: {
