@@ -52,4 +52,4 @@ Assim que inicializado, o servidor irá subir na porta 8000, caso precise altera
 ```bash
 php artisan serve --port=NUMERO_DA_PORTA_AQUI
 ```
-
+Segue Colletions da API para testar no POSTMAN <a href="https://www.getpostman.com/collections/cbd5464bfc055d703bc0"> COLLECTION API POSTMAN </a>
