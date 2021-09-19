@@ -20,7 +20,6 @@ class FavoredController extends Controller
             $search  = $request->get('search');
             $perpage = $request->get('perpage') ?? 10 ;
             $page    = $request->get('page') ?? 1;
-//            dd($page);
 
             return FavoredResource::collection(
                 Favored::where(function($query) use ($search){
@@ -37,7 +36,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao consultar favorecidos. Tente novamente!',
                     'error' => true
-                ]);
+                ],500);
         }
     }
 
@@ -63,7 +62,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao salvar favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
-                ]);
+                ],500);
         }
     }
 
@@ -87,7 +86,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao consultar favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
-                ]);
+                ],500);
         }
     }
 
@@ -115,7 +114,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao salvar favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
-                ]);
+                ],500);
         }
     }
 
@@ -141,7 +140,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao excluir favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
-                ]);
+                ],500);
         }
     }
 
@@ -172,7 +171,7 @@ class FavoredController extends Controller
                 ->json([
                     'data' => 'Erro ao excluir favorecido. Por favor tente novamente. '.$e->getMessage(),
                     'error' => true
-                ]);
+                ],500);
         }
     }
 }

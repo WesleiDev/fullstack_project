@@ -41,7 +41,8 @@ class FavoredRequest extends FormRequest
           'agency.required'    => 'A agência deve ser informada',
           'account.regex' => 'O número da conta não está no formado correto',
           'agencyDigit.regex' => 'O formato do dígito da agência não está no formato correto',
-          'accountType.in' => 'Não é permitido esse tipo de conta para o banco informado'
+          'accountType.in' => 'Não é permitido esse tipo de conta para o banco informado',
+          'accountDigit.regex' => 'O formato do dígito da conta não está correto'
         ];
     }
 
